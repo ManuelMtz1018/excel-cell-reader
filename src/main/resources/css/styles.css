@@ -1,0 +1,127 @@
+.app-root {
+    -fx-background-color: linear-gradient(from 0% 0% to 100% 100%, #c9d0d7 0%, #6d7a86 42%, #f1a369 43%, #2c3a47 100%);
+    -fx-font-family: "Segoe UI", "Arial", sans-serif;
+}
+
+.reader-card {
+    -fx-background-color: #2c333f;
+    -fx-border-color: rgba(255, 255, 255, 0.22);
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.35), 28, 0.25, 0, 14);
+}
+
+.lock-icon {
+    -fx-text-fill: #c7cbd0;
+    -fx-font-size: 34px;
+}
+
+.title {
+    -fx-text-fill: #f7f8f8;
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+}
+
+.subtitle {
+    -fx-text-fill: #aab2bc;
+    -fx-font-size: 12px;
+}
+
+.section-label {
+    -fx-text-fill: #f7f8f8;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.field-label {
+    -fx-text-fill: #f2d884;
+    -fx-font-size: 11px;
+    -fx-font-weight: 700;
+    -fx-letter-spacing: 0;
+}
+
+.text-field,
+.password-field,
+.combo-box,
+.text-area {
+    -fx-background-color: #323b48;
+    -fx-border-color: #65717f;
+    -fx-border-width: 0 0 1 0;
+    -fx-text-fill: #f7f8f8;
+    -fx-prompt-text-fill: #818b97;
+    -fx-highlight-fill: #f2a66d;
+    -fx-highlight-text-fill: #202731;
+}
+
+.text-field,
+.password-field,
+.combo-box {
+    -fx-min-height: 38px;
+    -fx-padding: 0 10 0 10;
+}
+
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #f7f8f8;
+}
+
+.combo-box-popup .list-view {
+    -fx-background-color: #323b48;
+    -fx-border-color: #f2a66d;
+}
+
+.combo-box-popup .list-cell:hover,
+.combo-box-popup .list-cell:selected {
+    -fx-background-color: #f2a66d;
+    -fx-text-fill: #202731;
+}
+
+.text-area {
+    -fx-border-width: 1;
+    -fx-border-radius: 2;
+    -fx-background-radius: 2;
+}
+
+.text-area .content {
+    -fx-background-color: #323b48;
+}
+
+.button {
+    -fx-cursor: hand;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 3;
+    -fx-border-radius: 3;
+    -fx-padding: 10 16 10 16;
+}
+
+.primary-button {
+    -fx-background-color: #f2a66d;
+    -fx-text-fill: #ffffff;
+}
+
+.primary-button:hover {
+    -fx-background-color: #ffb884;
+}
+
+.secondary-button {
+    -fx-background-color: transparent;
+    -fx-border-color: #b7bf63;
+    -fx-text-fill: #dce18d;
+}
+
+.secondary-button:hover {
+    -fx-background-color: rgba(183, 191, 99, 0.14);
+}
+
+.status-text {
+    -fx-text-fill: #aab2bc;
+    -fx-font-size: 11px;
+}
+
+.error-text {
+    -fx-text-fill: #ff8a8a;
+}
+
+.error-area {
+    -fx-border-color: #ff8a8a;
+}
