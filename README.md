@@ -1,6 +1,8 @@
 # Excel Cell Reader
 
-Aplicacion de escritorio en JavaFX para leer y monitorear una celda especifica de un archivo Excel. Esta pensada para casos donde necesitas vigilar un valor de negocio, inventario, finanzas o cualquier hoja `.xlsx` / `.xls`, y recibir una alerta cuando ese valor cambia.
+Aplicacion de escritorio en JavaFX para leer y monitorear una celda especifica de un archivo Excel. Esta pensada para casos donde necesitas vigilar un valor de negocio, inventario, finanzas o cualquier hoja `.xlsx` / `.xls`, y recibir una alerta por `Telegram` o `WhatsApp` cuando ese valor cambia.
+
+![img.png](img.png)
 
 ## Que hace
 
