@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
@@ -12,48 +14,192 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane fx:controller="com.example.excelreader.MainController"
+            prefHeight="840.0"
+            prefWidth="760.0"
             styleClass="app-root"
             xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1">
     <center>
         <VBox alignment="CENTER" spacing="0">
-            <VBox maxWidth="560.0" spacing="20.0" styleClass="reader-card">
+            <VBox maxWidth="640.0" spacing="18.0" styleClass="reader-card">
                 <padding>
-                    <Insets bottom="34.0" left="38.0" right="38.0" top="34.0"/>
+                    <Insets bottom="30.0" left="34.0" right="34.0" top="30.0"/>
                 </padding>
 
-                <VBox alignment="CENTER" spacing="8.0">
+                <VBox alignment="CENTER" spacing="4.0">
                     <Label styleClass="lock-icon" text="EX"/>
-                    <Label styleClass="title" text="Excel Cell Reader"/>
-                    <Label styleClass="subtitle" text="Lee y monitorea una celda especifica desde archivos .xlsx o .xls"/>
+                    <!--<Label styleClass="title" text="Excel Cell Reader"/>-->
+                    <Label styleClass="subtitle" text="Lee y monitorea columnas desde hasta 3 archivos .xlsx o .xls"/>
                 </VBox>
 
-                <VBox spacing="8.0">
-                    <Label styleClass="field-label" text="Archivo Excel"/>
-                    <HBox spacing="10.0">
-                        <TextField fx:id="filePathField"
-                                   editable="false"
-                                   focusTraversable="false"
-                                   HBox.hgrow="ALWAYS"
-                                   promptText="Ningun archivo seleccionado"/>
-                        <Button onAction="#onSelectFile" styleClass="secondary-button" text="Seleccionar archivo"/>
-                    </HBox>
-                </VBox>
+                <TabPane tabClosingPolicy="UNAVAILABLE">
+                    <Tab text="Documento 1">
+                        <VBox spacing="14.0">
+                            <padding>
+                                <Insets bottom="12.0" left="0.0" right="0.0" top="16.0"/>
+                            </padding>
+                            <VBox spacing="8.0">
+                                <Label styleClass="field-label" text="Archivo Excel"/>
+                                <HBox spacing="10.0">
+                                    <TextField fx:id="filePathField1"
+                                               editable="true"
+                                               focusTraversable="false"
+                                               HBox.hgrow="ALWAYS"
+                                               promptText="Ningun archivo seleccionado"/>
+                                    <Button onAction="#onSelectFile1" styleClass="secondary-button" text="Seleccionar"/>
+                                </HBox>
+                            </VBox>
+                            <HBox spacing="14.0">
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna"/>
+                                    <TextField fx:id="columnReferenceField1" promptText="D"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Fila inicial"/>
+                                    <TextField fx:id="startRowField1" promptText="1"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Fila final"/>
+                                    <TextField fx:id="endRowField1" promptText="20"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Tipo"/>
+                                    <ComboBox fx:id="dataTypeComboBox1" maxWidth="Infinity" promptText="Seleccionar"/>
+                                </VBox>
+                            </HBox>
+                            <HBox spacing="14.0">
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna extra 1"/>
+                                    <TextField fx:id="extraColumnField1A" promptText="J"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Etiqueta 1"/>
+                                    <TextField fx:id="extraLabelField1A" promptText="Estado"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna extra 2"/>
+                                    <TextField fx:id="extraColumnField1B" promptText="K"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Etiqueta 2"/>
+                                    <TextField fx:id="extraLabelField1B" promptText="Ubicacion"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </Tab>
 
-                <HBox spacing="18.0">
-                    <VBox spacing="8.0" HBox.hgrow="ALWAYS">
-                        <Label styleClass="field-label" text="Celda"/>
-                        <TextField fx:id="cellReferenceField" promptText="A1"/>
-                    </VBox>
-                    <VBox spacing="8.0" HBox.hgrow="ALWAYS">
-                        <Label styleClass="field-label" text="Tipo de dato"/>
-                        <ComboBox fx:id="dataTypeComboBox"
-                                  maxWidth="Infinity"
-                                  promptText="Seleccionar"/>
-                    </VBox>
-                </HBox>
+                    <Tab text="Documento 2">
+                        <VBox spacing="14.0">
+                            <padding>
+                                <Insets bottom="12.0" left="0.0" right="0.0" top="16.0"/>
+                            </padding>
+                            <VBox spacing="8.0">
+                                <Label styleClass="field-label" text="Archivo Excel"/>
+                                <HBox spacing="10.0">
+                                    <TextField fx:id="filePathField2"
+                                               editable="true"
+                                               focusTraversable="false"
+                                               HBox.hgrow="ALWAYS"
+                                               promptText="Ningun archivo seleccionado"/>
+                                    <Button onAction="#onSelectFile2" styleClass="secondary-button" text="Seleccionar"/>
+                                </HBox>
+                            </VBox>
+                            <HBox spacing="14.0">
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna"/>
+                                    <TextField fx:id="columnReferenceField2" promptText="D"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Fila inicial"/>
+                                    <TextField fx:id="startRowField2" promptText="1"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Fila final"/>
+                                    <TextField fx:id="endRowField2" promptText="20"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Tipo"/>
+                                    <ComboBox fx:id="dataTypeComboBox2" maxWidth="Infinity" promptText="Seleccionar"/>
+                                </VBox>
+                            </HBox>
+                            <HBox spacing="14.0">
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna extra 1"/>
+                                    <TextField fx:id="extraColumnField2A" promptText="J"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Etiqueta 1"/>
+                                    <TextField fx:id="extraLabelField2A" promptText="Estado"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna extra 2"/>
+                                    <TextField fx:id="extraColumnField2B" promptText="K"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Etiqueta 2"/>
+                                    <TextField fx:id="extraLabelField2B" promptText="Ubicacion"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </Tab>
 
-                <Button maxWidth="Infinity" onAction="#onReadCell" styleClass="primary-button" text="Leer celda"/>
+                    <Tab text="Documento 3">
+                        <VBox spacing="14.0">
+                            <padding>
+                                <Insets bottom="12.0" left="0.0" right="0.0" top="16.0"/>
+                            </padding>
+                            <VBox spacing="8.0">
+                                <Label styleClass="field-label" text="Archivo Excel"/>
+                                <HBox spacing="10.0">
+                                    <TextField fx:id="filePathField3"
+                                               editable="true"
+                                               focusTraversable="false"
+                                               HBox.hgrow="ALWAYS"
+                                               promptText="Ningun archivo seleccionado"/>
+                                    <Button onAction="#onSelectFile3" styleClass="secondary-button" text="Seleccionar"/>
+                                </HBox>
+                            </VBox>
+                            <HBox spacing="14.0">
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna"/>
+                                    <TextField fx:id="columnReferenceField3" promptText="D"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Fila inicial"/>
+                                    <TextField fx:id="startRowField3" promptText="1"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Fila final"/>
+                                    <TextField fx:id="endRowField3" promptText="20"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Tipo"/>
+                                    <ComboBox fx:id="dataTypeComboBox3" maxWidth="Infinity" promptText="Seleccionar"/>
+                                </VBox>
+                            </HBox>
+                            <HBox spacing="14.0">
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna extra 1"/>
+                                    <TextField fx:id="extraColumnField3A" promptText="J"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Etiqueta 1"/>
+                                    <TextField fx:id="extraLabelField3A" promptText="Estado"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Columna extra 2"/>
+                                    <TextField fx:id="extraColumnField3B" promptText="K"/>
+                                </VBox>
+                                <VBox spacing="8.0" HBox.hgrow="ALWAYS">
+                                    <Label styleClass="field-label" text="Etiqueta 2"/>
+                                    <TextField fx:id="extraLabelField3B" promptText="Ubicacion"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </Tab>
+                </TabPane>
+
+                <Button maxWidth="Infinity" onAction="#onReadColumns" styleClass="primary-button" text="Leer columnas"/>
 
                 <VBox spacing="12.0">
                     <Label styleClass="section-label" text="Monitoreo y Mensajeria"/>
@@ -91,7 +237,7 @@
                         <Region HBox.hgrow="ALWAYS"/>
                         <Label fx:id="statusLabel" styleClass="status-text" text="Listo"/>
                     </HBox>
-                    <TextArea fx:id="resultArea" editable="false" prefRowCount="5" wrapText="true"/>
+                    <TextArea fx:id="resultArea" editable="false" prefRowCount="8" wrapText="true"/>
                 </VBox>
             </VBox>
         </VBox>

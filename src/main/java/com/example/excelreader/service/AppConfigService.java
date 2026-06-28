@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,11 +33,7 @@ public class AppConfigService {
         resolvePlaceholders(properties, dotenv);
 
         return new AppConfig(
-                new AppConfig.ExcelConfig(
-                        properties.getProperty("excel.file.path", ""),
-                        properties.getProperty("excel.cell.reference", ""),
-                        parseDataType(properties.getProperty("excel.cell.data-type"))
-                ),
+                loadDocumentConfigs(properties),
                 new AppConfig.MonitorConfig(parsePositiveInt(properties, "monitor.interval.seconds", 5)),
                 new AppConfig.MessagingConfig(
                         parseMessageChannel(properties.getProperty("messaging.channel"))
@@ -51,6 +49,88 @@ public class AppConfigService {
                         properties.getProperty("whatsapp.graph-api-version", "v22.0")
                 )
         );
+    }
+
+    private List<AppConfig.ExcelDocumentConfig> loadDocumentConfigs(Properties properties) {
+        List<AppConfig.ExcelDocumentConfig> documents = new ArrayList<>();
+        for (int index = 1; index <= 3; index++) {
+            documents.add(new AppConfig.ExcelDocumentConfig(
+                    propertyWithFallback(properties, "document." + index + ".file.path", index == 1 ? "excel.file.path" : ""),
+                    documentColumn(properties, index),
+                    documentStartRow(properties, index),
+                    documentEndRow(properties, index),
+                    parseDataType(propertyWithFallback(properties, "document." + index + ".data-type", index == 1 ? "excel.cell.data-type" : "")),
+                    properties.getProperty("document." + index + ".extra-column-1", ""),
+                    propertyOrDefault(properties, "document." + index + ".extra-label-1", "Estado"),
+                    properties.getProperty("document." + index + ".extra-column-2", ""),
+                    propertyOrDefault(properties, "document." + index + ".extra-label-2", "Ubicacion")
+            ));
+        }
+        return documents;
+    }
+
+    private String propertyOrDefault(Properties properties, String key, String defaultValue) {
+        String value = properties.getProperty(key, "");
+        return value.isBlank() ? defaultValue : value;
+    }
+
+    private String documentColumn(Properties properties, int index) {
+        String value = properties.getProperty("document." + index + ".column", "");
+        if (!value.isBlank() || index != 1) {
+            return value;
+        }
+
+        return extractColumn(properties.getProperty("excel.cell.reference", ""));
+    }
+
+    private int documentStartRow(Properties properties, int index) {
+        int configuredValue = parsePositiveInt(properties, "document." + index + ".start-row", 1);
+        if (configuredValue != 1 || index != 1) {
+            return configuredValue;
+        }
+
+        return extractRow(properties.getProperty("excel.cell.reference", ""), configuredValue);
+    }
+
+    private int documentEndRow(Properties properties, int index) {
+        int configuredValue = parsePositiveInt(properties, "document." + index + ".end-row", 1);
+        if (configuredValue != 1 || index != 1) {
+            return configuredValue;
+        }
+
+        return extractRow(properties.getProperty("excel.cell.reference", ""), configuredValue);
+    }
+
+    private String extractColumn(String cellReference) {
+        if (cellReference == null || cellReference.isBlank()) {
+            return "";
+        }
+        return cellReference.trim().replaceAll("[^A-Za-z]", "").toUpperCase();
+    }
+
+    private int extractRow(String cellReference, int defaultValue) {
+        if (cellReference == null || cellReference.isBlank()) {
+            return defaultValue;
+        }
+
+        String row = cellReference.trim().replaceAll("[^0-9]", "");
+        if (row.isBlank()) {
+            return defaultValue;
+        }
+
+        try {
+            return Integer.parseInt(row);
+        } catch (NumberFormatException exception) {
+            return defaultValue;
+        }
+    }
+
+    private String propertyWithFallback(Properties properties, String primaryKey, String fallbackKey) {
+        String value = properties.getProperty(primaryKey, "");
+        if (!value.isBlank() || fallbackKey.isBlank()) {
+            return value;
+        }
+        return properties.getProperty(fallbackKey, "");
     }
 
     private void loadClasspathConfig(Properties properties) {

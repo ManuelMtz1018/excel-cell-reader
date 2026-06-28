@@ -1,83 +1,157 @@
 # Excel Cell Reader
 
-Aplicacion de escritorio en JavaFX para leer y monitorear una celda especifica de un archivo Excel. Esta pensada para casos donde necesitas vigilar un valor de negocio, inventario, finanzas o cualquier hoja `.xlsx` / `.xls`, y recibir una alerta por `Telegram` o `WhatsApp` cuando ese valor cambia.
+Aplicacion de escritorio en JavaFX para leer y monitorear columnas de archivos Excel. Permite configurar hasta 3 documentos al mismo tiempo, revisar una columna principal por rango de filas, anexar hasta 2 columnas extra de contexto por fila y enviar alertas por Telegram o WhatsApp cuando cambien valores.
 
-![img.png](img.png)
+![img_1.png](img_1.png)
 
 ## Que hace
 
-- Permite seleccionar un archivo Excel desde la interfaz.
-- Lee una celda concreta, por ejemplo `A1`, `D5` o `I12`.
-- Valida el tipo esperado de dato: texto, numero, fecha o booleano.
-- Monitorea la celda en intervalos configurables.
-- Detecta cambios comparando el valor anterior contra el nuevo.
-- Envia una notificacion cuando la celda cambia.
-- Soporta Telegram y WhatsApp con un strategy pattern para cambiar de canal sin tocar el monitor.
-- Carga configuracion desde `application.properties`, variables de entorno y `.env`.
+- Lee archivos `.xlsx` y `.xls`.
+- Muestra 3 pestanas, una por documento.
+- Permite seleccionar o escribir manualmente la ruta del archivo.
+- Lee una columna principal dentro de un rango de filas.
+- Permite agregar 2 columnas extra por documento para contexto, por ejemplo `Estado` y `Ubicacion`.
+- Valida el tipo esperado de la columna principal: texto, numero, fecha o booleano.
+- Lee las columnas extra como texto visible de Excel para evitar errores por formato mixto.
+- Monitorea los documentos en intervalos configurables.
+- Toma la primera lectura como base y compara lecturas posteriores.
+- Envia alerta solo cuando cambia la columna principal.
+- En cada alerta incluye el archivo origen, las celdas que cambiaron y los valores extra de la misma fila.
+- Permite cambiar el canal de mensajeria entre Telegram y WhatsApp.
+- Carga configuracion desde `application.properties`, variables de entorno, `.env` y un archivo local opcional.
 
 ## Tecnologias
 
 - Java 17
 - JavaFX 21
-- Apache POI para leer Excel
-- Log4j2 para logs
-- dotenv-java para cargar `.env`
+- Apache POI
+- Log4j2
+- dotenv-java
 - Maven
 
-## Estructura importante
+## Estructura clave
 
 ```text
 src/main/java/com/example/excelreader
+  AppConfig.java
+  CellDataType.java
   MainApp.java
   MainController.java
-  AppConfig.java
+
+src/main/java/com/example/excelreader/models
+  CellChange.java
+  DocumentMonitorConfig.java
+  ExtraColumnValues.java
+  MonitorConfig.java
+  RowSnapshot.java
 
 src/main/java/com/example/excelreader/service
   AppConfigService.java
   CellMonitorService.java
+  ExcelReader.java
   ExcelReaderService.java
+  MessageChannel.java
   NotificationService.java
   NotificationServiceRegistry.java
   TelegramNotificationService.java
   WhatsAppNotificationService.java
-  MessageChannel.java
 
 src/main/resources
   application.properties
-  fxml/main-view.fxml
   css/styles.css
+  fxml/main-view.fxml
 ```
+
+## Interfaz
+
+La pantalla principal tiene:
+
+- Un `TabPane` moderno con 3 pestanas: `Documento 1`, `Documento 2`, `Documento 3`.
+- Ruta de archivo editable y boton para seleccionar archivo.
+- Columna principal.
+- Fila inicial y fila final.
+- Tipo de dato esperado para la columna principal.
+- Dos pares de campos para columnas extra:
+    - `Columna extra 1` + `Etiqueta 1`
+    - `Columna extra 2` + `Etiqueta 2`
+- Boton `Leer columnas`.
+- Selector de canal: `TELEGRAM` o `WHATSAPP`.
+- Botones para iniciar y detener monitoreo.
 
 ## Configuracion
 
-La configuracion principal vive en:
+La configuracion base vive en:
 
 ```text
 src/main/resources/application.properties
 ```
 
-Ese archivo usa placeholders como:
+La app resuelve placeholders como `${FILE_PATH_1}` desde este orden:
 
-```properties
-excel.file.path=${FILE_PATH}
-telegram.bot.token=${TOKEN_TELEGRAM}
-whatsapp.access-token=${WHATSAPP_TOKEN}
-```
-
-La app resuelve esos valores desde:
-
-1. Propiedades del sistema de Java (`-DVARIABLE=valor`)
+1. Propiedades del sistema de Java, por ejemplo `-DVARIABLE=valor`
 2. Variables de entorno del sistema
 3. Archivo `.env` en la raiz del proyecto
 
-## Archivo .env
+Tambien existe un archivo local opcional:
 
-Crea un archivo `.env` en la carpeta del proyecto `excel-cell-reader`:
+```text
+config/application-local.properties
+```
+
+Si existe, sobreescribe valores de `application.properties`. Puedes partir de:
+
+```text
+config/application-local.example.properties
+```
+
+## Variables por documento
+
+Cada documento usa estas variables:
 
 ```env
-FILE_PATH=C:\FinancialProyects\InventarioFerremax.xlsx
-CELL_REFERENCE=I12
+FILE_PATH_1=C:\FinancialProyects\InventarioFerremax.xlsx
+COLUMN_1=I
+START_ROW_1=5
+END_ROW_1=15
+DATA_TYPE_1=NUMERO
+EXTRA_COLUMN_1_A=J
+EXTRA_LABEL_1_A=Estado
+EXTRA_COLUMN_1_B=K
+EXTRA_LABEL_1_B=Ubicacion
 
+FILE_PATH_2=
+COLUMN_2=
+START_ROW_2=1
+END_ROW_2=1
+DATA_TYPE_2=NUMERO
+EXTRA_COLUMN_2_A=
+EXTRA_LABEL_2_A=Estado
+EXTRA_COLUMN_2_B=
+EXTRA_LABEL_2_B=Ubicacion
+
+FILE_PATH_3=
+COLUMN_3=
+START_ROW_3=1
+END_ROW_3=1
+DATA_TYPE_3=NUMERO
+EXTRA_COLUMN_3_A=
+EXTRA_LABEL_3_A=Estado
+EXTRA_COLUMN_3_B=
+EXTRA_LABEL_3_B=Ubicacion
+```
+
+Notas:
+
+- Los documentos 2 y 3 pueden quedarse vacios si no se usan.
+- Las columnas extra son opcionales.
+- Las etiquetas extra controlan el nombre que saldra en la alerta.
+- Para el documento 1 todavia hay compatibilidad con variables anteriores: `FILE_PATH`, `CELL_REFERENCE` y `excel.cell.data-type`.
+
+## Mensajeria
+
+Las credenciales son compartidas por todos los documentos:
+
+```env
 TOKEN_TELEGRAM=tu_token_de_telegram
 CHAT_ID_TELEGRAM=tu_chat_id
 
@@ -86,11 +160,7 @@ WHATSAPP_PHONE_ID=tu_phone_number_id
 WHATSAPP_PHONE_NUMBER_TO=524426520700
 ```
 
-Para WhatsApp, el numero destino debe ir en formato internacional. Para Mexico normalmente empieza con `52`; en algunos casos de WhatsApp puede requerir `521` antes del numero.
-
-## Elegir canal de mensajeria
-
-En `application.properties` puedes definir el canal inicial:
+En `application.properties` se configura el canal inicial:
 
 ```properties
 messaging.channel=TELEGRAM
@@ -103,48 +173,49 @@ TELEGRAM
 WHATSAPP
 ```
 
-Tambien puedes cambiarlo desde la interfaz usando el selector de canal en la seccion de monitoreo.
-
-## Telegram
-
-La estrategia de Telegram envia mensajes usando:
-
-```text
-https://api.telegram.org/bot{TOKEN}/sendMessage
-```
-
-Necesitas:
-
-- `TOKEN_TELEGRAM`: token del bot.
-- `CHAT_ID_TELEGRAM`: chat id destino.
+La interfaz tambien permite cambiar el canal antes de iniciar el monitoreo.
 
 ## WhatsApp
 
-La estrategia de WhatsApp envia mensajes con WhatsApp Cloud API:
+WhatsApp usa Graph API:
+
+```properties
+whatsapp.graph-api-version=v25.0
+```
+
+El numero destino debe ir en formato internacional. Para Mexico normalmente empieza con `52`; en algunos casos de WhatsApp puede requerir `521`.
+
+## Como funcionan las alertas
+
+Al iniciar el monitoreo:
+
+1. La app lee la columna principal de cada documento configurado.
+2. Guarda esa lectura como base.
+3. En cada barrido posterior vuelve a leer los mismos rangos.
+4. Compara solo la columna principal.
+5. Si la columna principal no cambio, no envia alerta.
+6. Si cambio una o varias celdas, envia solo esas celdas.
+7. Para cada celda cambiada agrega los valores de las columnas extra en la misma fila.
+
+Ejemplo de alerta:
 
 ```text
-https://graph.facebook.com/{version}/{phone-number-id}/messages
+Archivo: InventarioFerremax.xlsx
+Columna I actualizada. Cambios detectados: 1.
+
+I12: 300 -> 275
+Estado: Reordenar
+Ubicacion: A-01
 ```
 
-El payload enviado es de tipo texto:
+## Leer columnas sin monitorear
 
-```json
-{
-  "messaging_product": "whatsapp",
-  "to": "524426520700",
-  "type": "text",
-  "text": {
-    "body": "Mensaje de alerta"
-  }
-}
-```
+El boton `Leer columnas` sirve para validar la configuracion antes de iniciar el monitoreo. Muestra:
 
-Necesitas:
-
-- `WHATSAPP_TOKEN`: access token de Meta.
-- `WHATSAPP_PHONE_ID`: phone number id configurado en Meta.
-- `WHATSAPP_PHONE_NUMBER_TO`: numero destino.
-- `whatsapp.graph-api-version`: version de Graph API, por ejemplo `v25.0`.
+- Archivo leido.
+- Columna principal y rango.
+- Valores de la columna principal.
+- Valores de columnas extra, si fueron configuradas.
 
 ## Ejecutar
 
@@ -162,21 +233,21 @@ mvn -DskipTests compile
 
 ## Flujo de uso
 
-1. Configura tu `.env`.
+1. Configura `.env`, variables de entorno o `config/application-local.properties`.
 2. Ejecuta la app.
-3. Selecciona el archivo Excel.
-4. Escribe la celda a leer.
-5. Elige el tipo de dato esperado.
-6. Presiona `Leer celda` para probar.
-7. Elige el canal de mensajeria.
-8. Define el intervalo en segundos.
-9. Presiona `Iniciar monitoreo`.
-
-Cuando el valor cambie, la app enviara una alerta por el canal seleccionado.
+3. En cada pestana que uses, selecciona o escribe la ruta del archivo Excel.
+4. Escribe la columna principal, por ejemplo `A`, `D`, `I` o `AA`.
+5. Define fila inicial y fila final.
+6. Elige el tipo de dato esperado.
+7. Agrega hasta 2 columnas extra si necesitas contexto.
+8. Presiona `Leer columnas` para validar.
+9. Elige `TELEGRAM` o `WHATSAPP`.
+10. Presiona `Iniciar monitoreo`.
 
 ## Notas
 
 - No subas tokens reales al repositorio.
-- Si usas `.env`, ejecuta la app desde la carpeta `excel-cell-reader` para que `dotenv-java` lo encuentre.
-- Si existe `config/application-local.properties`, sus valores sobreescriben los de `application.properties`.
-- El monitor solo envia mensajes cuando detecta un cambio; la primera lectura se usa como valor inicial.
+- Si usas `.env`, ejecuta la app desde la carpeta `excel-cell-reader`.
+- Las mismas credenciales de Telegram y WhatsApp sirven para los 3 documentos.
+- La primera lectura no dispara alerta; solo prepara la base de comparacion.
+- El estilo del `TabPane` esta personalizado en `src/main/resources/css/styles.css` para mantener la paleta oscura, ambar y oliva de la app.

@@ -12,7 +12,7 @@
 
 .lock-icon {
     -fx-text-fill: #c7cbd0;
-    -fx-font-size: 34px;
+    -fx-font-size: 24px;
 }
 
 .title {
@@ -73,6 +73,64 @@
 .combo-box-popup .list-cell:selected {
     -fx-background-color: #f2a66d;
     -fx-text-fill: #202731;
+}
+
+.tab-pane {
+    -fx-background-color: transparent;
+    -fx-tab-min-height: 42px;
+    -fx-tab-max-height: 42px;
+}
+
+.tab-pane .tab-header-area {
+    -fx-padding: 0;
+}
+
+.tab-pane .tab-header-background {
+    -fx-background-color: #323b48;
+    -fx-border-color: #65717f;
+    -fx-border-width: 0 0 1 0;
+}
+
+.tab-pane .headers-region {
+    -fx-background-color: transparent;
+}
+
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-background-radius: 0;
+    -fx-border-color: transparent;
+    -fx-padding: 0 18 0 18;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.tab-pane .tab:hover {
+    -fx-background-color: rgba(242, 166, 109, 0.10);
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: transparent;
+    -fx-border-color: #f2a66d;
+    -fx-border-width: 0 0 3 0;
+}
+
+.tab-pane .tab .tab-label {
+    -fx-text-fill: #aab2bc;
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+}
+
+.tab-pane .tab:hover .tab-label {
+    -fx-text-fill: #f7f8f8;
+}
+
+.tab-pane .tab:selected .tab-label {
+    -fx-text-fill: #f2d884;
+}
+
+.tab-pane .tab-content-area {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
 }
 
 .text-area {

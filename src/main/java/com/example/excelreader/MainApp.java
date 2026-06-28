@@ -1,5 +1,6 @@
 package com.example.excelreader;
 
+import com.jfoenix.controls.JFXDecorator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -12,8 +13,11 @@ public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader loader = new FXMLLoader(MainApp.class.getResource("/fxml/main-view.fxml"));
-        Scene scene = new Scene(loader.load(), 700, 780);
+        JFXDecorator decorator = new JFXDecorator(stage, loader.load());
+        decorator.setCustomMaximize(true);
+        Scene scene = new Scene(decorator, 700, 780);
         scene.getStylesheets().add(MainApp.class.getResource("/css/styles.css").toExternalForm());
+
         MainController controller = loader.getController();
 
         stage.setTitle("Excel Cell Reader");
